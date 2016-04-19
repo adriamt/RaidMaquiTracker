@@ -1,7 +1,5 @@
 package com.amt.raidmaquitracker.httpTask;
 
-import android.util.Log;
-
 import com.amt.raidmaquitracker.LogWriter;
 
 import org.json.JSONArray;

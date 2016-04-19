@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">RaidMaquiTracker</string>
+    <string name="mail_hint">Correo de usuario</string>
+    <string name="login">Login</string>
+    <string name="create_session">Crear sessión</string>
+    <string name="start_updates">Inicia actualizaciones</string>
+    <string name="stop_updates">Finaliza actualizaciones</string>
+    <string name="userMissingMsg">Falta el usuario</string>
+</resources>

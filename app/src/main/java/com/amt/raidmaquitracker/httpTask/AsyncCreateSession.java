@@ -1,9 +1,5 @@
 package com.amt.raidmaquitracker.httpTask;
 
-
-import android.util.Log;
-
-
 import com.amt.raidmaquitracker.LogWriter;
 
 import org.json.JSONObject;
@@ -17,6 +13,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Locale;
 import java.util.zip.GZIPInputStream;
 
 public class AsyncCreateSession {
@@ -27,10 +24,10 @@ public class AsyncCreateSession {
     public String CreateSession(String user_id){
 
         String resposta = "";
-        String codi_resposta = "";
+        String codi_resposta ;
 
         Calendar c = Calendar.getInstance();
-        SimpleDateFormat df = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+        SimpleDateFormat df = new SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault());
         String formattedDate = df.format(c.getTime());
         LogWriter lw = new LogWriter();
 
@@ -38,7 +35,6 @@ public class AsyncCreateSession {
             String postData = "{" +
                     "\"user_id\":" + user_id +
                     "}";
-            //lw.writeToFile("["+formattedDate+"] "+"Sent: " + postData);
 
             URL myURL = new URL("http://www.raidmaqui.com/live/api/session/create");
             HttpURLConnection myURLConnection = (HttpURLConnection)myURL.openConnection();
@@ -73,12 +69,12 @@ public class AsyncCreateSession {
                     while((response = reader.readLine()) != null) {
                         sb.append(response);
                     }
-                    //lw.writeToFile("["+formattedDate+"] "+"Received: " + (String.valueOf(sb)));
                     JSONObject jo = new JSONObject((String.valueOf(sb)));
                     JSONObject data = jo.getJSONObject("data");
                     resposta = (data.getString("id"));
                 } catch (IOException e) {
                     lw.writeToFile("AsyncCreateSession:[" + formattedDate + "] " + e.getMessage());
+                    lw.writeToFile("    Data Sent: " + postData);
                     e.printStackTrace();
                 }
             }else {
@@ -89,12 +85,12 @@ public class AsyncCreateSession {
                     sb.append(response);
                 }
                 lw.writeToFile("AsyncCreateSession:[" + formattedDate + "] " + "Received: " + (String.valueOf(sb)));
+                lw.writeToFile("    Data Sent: " + postData);
                 resposta = (String.valueOf(sb));
             }
             return resposta;
         } catch (Exception e) {
             lw.writeToFile("[" + formattedDate + "] " + e.getMessage());
-            Log.d("AsyncCSession: ", e.getLocalizedMessage());
             return resposta ;
         }
     }

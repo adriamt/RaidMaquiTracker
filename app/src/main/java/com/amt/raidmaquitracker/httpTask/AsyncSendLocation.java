@@ -1,8 +1,5 @@
 package com.amt.raidmaquitracker.httpTask;
 
-
-import android.util.Log;
-
 import com.amt.raidmaquitracker.LogWriter;
 
 import org.json.JSONObject;
@@ -16,6 +13,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Locale;
 import java.util.zip.GZIPInputStream;
 
 public class AsyncSendLocation {
@@ -26,10 +24,10 @@ public class AsyncSendLocation {
     public String SendLocation(String latitude, String longitude, String session_id,String battery){
 
         String resposta = "";
-        String codi_resposta = "";
+        String codi_resposta ;
 
         Calendar c = Calendar.getInstance();
-        SimpleDateFormat df = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+        SimpleDateFormat df = new SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault());
         String formattedDate = df.format(c.getTime());
         LogWriter lw = new LogWriter();
 
@@ -40,7 +38,6 @@ public class AsyncSendLocation {
                     "\"session_id\":" + session_id + "," +
                     "\"battery\":" + battery +
                     "}";
-            //lw.writeToFile("["+formattedDate+"] "+"Sent: " + postData);
 
             URL myURL = new URL("http://www.raidmaqui.com/live/api/session/log");
             HttpURLConnection myURLConnection = (HttpURLConnection)myURL.openConnection();
@@ -75,13 +72,13 @@ public class AsyncSendLocation {
                         sb.append(response);
                         System.out.println(response);
                     }
-                    //lw.writeToFile("["+formattedDate+"] "+"Received: " + (String.valueOf(sb)));
 
                     JSONObject jo = new JSONObject((String.valueOf(sb)));
                     JSONObject data = jo.getJSONObject("data");
                     resposta = (data.getString("interval"));
                 } catch (IOException e) {
                     lw.writeToFile("AsyncSendLocation:[" + formattedDate + "] " + e.getMessage());
+                    lw.writeToFile("    Data Sent: " + postData);
                     e.printStackTrace();
                 }
             }else {
@@ -92,12 +89,12 @@ public class AsyncSendLocation {
                     sb.append(response);
                 }
                 lw.writeToFile("AsyncSenLocation:["+formattedDate+"] "+"Received: " + (String.valueOf(sb)));
+                lw.writeToFile("    Data Sent: " + postData);
                 resposta = (String.valueOf(sb));
             }
             return resposta;
         } catch (Exception e) {
             lw.writeToFile("AsyncSenLocation:[" + formattedDate + "] " + e.getMessage());
-            Log.d("AsyncSLocation: ", e.getLocalizedMessage());
             return resposta ;
         }
     }
