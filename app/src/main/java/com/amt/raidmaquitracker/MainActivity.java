@@ -1,5 +1,6 @@
 package com.amt.raidmaquitracker;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.DialogFragment;
 import android.content.ComponentName;
@@ -23,7 +24,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends Activity {
 
     Button btnLogin;
     Button btnCreateSession;

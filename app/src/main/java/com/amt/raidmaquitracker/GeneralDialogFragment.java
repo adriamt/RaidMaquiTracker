@@ -13,7 +13,7 @@ public class GeneralDialogFragment extends DialogFragment{
         Bundle mArgs = getArguments();
         String msg = mArgs.getString("msg");
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setTitle("Missatge");
+        builder.setTitle(getResources().getString(R.string.alert_dialog_tittle));
         builder.setMessage(msg).setNeutralButton(getResources().getString(R.string.ok_btn),new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
             }
