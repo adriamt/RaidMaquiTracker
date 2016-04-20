@@ -8,4 +8,12 @@
     <string name="stop_updates">Stop updates</string>
     <string name="ok_btn" translatable="false">Ok</string>
     <string name="userMissingMsg">User Missing</string>
+    <string name="create_session_ok_msg">Create session OK</string>
+    <string name="create_session_no_ok_msg">Create session error</string>
+    <string name="service_started_msg">Service started</string>
+    <string name="service_stopped_msg">Service Stopped</string>
+    <string name="gps_settings_msg_tittle">GPS Settings</string>
+    <string name="gps_settings_msg">Service didn\'t start because GPS is not enabled. Do you want to go to settings menu?</string>
+    <string name="gps_settings_btn_settings">Settings</string>
+    <string name="gps_settings_btn_cancel">Cancel</string>
 </resources>

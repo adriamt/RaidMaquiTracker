@@ -3,8 +3,16 @@
     <string name="app_name">RaidMaquiTracker</string>
     <string name="mail_hint">Correo de usuario</string>
     <string name="login">Login</string>
-    <string name="create_session">Crear sessión</string>
+    <string name="create_session">Crear sesión</string>
     <string name="start_updates">Inicia actualizaciones</string>
     <string name="stop_updates">Finaliza actualizaciones</string>
     <string name="userMissingMsg">Falta el usuario</string>
+    <string name="create_session_ok_msg">Sesión creada correctamente</string>
+    <string name="create_session_no_ok_msg">Error al crear sesión</string>
+    <string name="service_started_msg">Servicio iniciado</string>
+    <string name="service_stopped_msg">Servicio detenido</string>
+    <string name="gps_settings_msg_tittle">Ajustes de GPS</string>
+    <string name="gps_settings_msg">El servicio no se ha iniciado porque el GPS no está activado. ¿Quiere acceder al menú de ajustes?</string>
+    <string name="gps_settings_btn_settings">Ajustes</string>
+    <string name="gps_settings_btn_cancel">Cancelar</string>
 </resources>

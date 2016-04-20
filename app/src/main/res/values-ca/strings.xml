@@ -7,4 +7,12 @@
     <string name="start_updates">Inicia actualitzacions</string>
     <string name="stop_updates">Atura actualitzacions</string>
     <string name="userMissingMsg">Falta l\'usuari</string>
+    <string name="create_session_ok_msg">Sessió creada correctamente</string>
+    <string name="create_session_no_ok_msg">Error al crear sessió</string>
+    <string name="service_started_msg">Servei iniciat</string>
+    <string name="service_stopped_msg">Servei aturat</string>
+    <string name="gps_settings_msg_tittle">Ajustaments de GPS</string>
+    <string name="gps_settings_msg">El servei no s\'ha iniciat perquè el GPS no està activat. Vol accedir al menú d\'ajustaments?</string>
+    <string name="gps_settings_btn_settings">Ajustaments</string>
+    <string name="gps_settings_btn_cancel">Cancel·lar</string>
 </resources>

@@ -1,17 +1,20 @@
 package com.amt.raidmaquitracker;
 
+import android.app.AlertDialog;
 import android.app.DialogFragment;
 import android.content.ComponentName;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.location.LocationManager;
+import android.provider.Settings;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.amt.raidmaquitracker.httpTask.HttpHandler;
@@ -74,7 +77,7 @@ public class MainActivity extends AppCompatActivity {
                         @Override
                         public void onResponse(String result) {
                             user_id = result;
-                            String temp = "";
+                            String temp ;
                             Calendar c = Calendar.getInstance();
                             SimpleDateFormat df = new SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault());
                             String formattedDate = df.format(c.getTime());
@@ -119,15 +122,16 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onResponse(String result) {
                         session_id = result;
-                        String temp = "";
+                        String temp ;
                         Calendar c = Calendar.getInstance();
                         SimpleDateFormat df = new SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault());
                         String formattedDate = df.format(c.getTime());
                         if (!result.equals("")){
-                            temp = "CreateSession OK!";
+                            temp = getResources().getString(R.string.create_session_ok_msg);
+                            mStartUpdatesButton.setEnabled(true);
                             lw.writeToFile("[" + formattedDate + "] " + "CreateSession OK. Session ID: " + session_id);
                         }else{
-                            temp = "CreateSession Error!";
+                            temp = getResources().getString(R.string.create_session_no_ok_msg);
                             lw.writeToFile("[" + formattedDate + "] " + "CreateSession Error.");
                         }
                         DialogFragment back_dialog = new GeneralDialogFragment();
@@ -144,23 +148,40 @@ public class MainActivity extends AppCompatActivity {
                 }.createSession(user_id);
             }
         });
+
+        mStartUpdatesButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startUpdates(v);
+            }
+        });
+
+        mStopUpdatesButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                stopUpdates(v);
+            }
+        });
     }
 
     public void startUpdates(View v){
         Log.e("StartSvc", "Button Click ");
-        Intent i = new Intent(v.getContext(), BackgroundLocationService.class);
-        i.putExtra("foo", "bar");
-        mStartUpdatesButton.setEnabled(false);
-        mStopUpdatesButton.setEnabled(true);
-        Toast.makeText(getBaseContext(),"Service Started!", Toast.LENGTH_SHORT).show();
-        ComponentName service = v.getContext().startService(i);
-        if (null == service){
-            // something really wrong here
-            mStartUpdatesButton.setEnabled(true);
-            mStopUpdatesButton.setEnabled(false);
-            Log.e("StartSvc", "Could not start service ");
+        if(canGetLocation()) {
+            Intent i = new Intent(v.getContext(), BackgroundLocationService.class);
+            i.putExtra("foo", "bar");
+            mStartUpdatesButton.setEnabled(false);
+            mStopUpdatesButton.setEnabled(true);
+            Toast.makeText(getBaseContext(), getResources().getString(R.string.service_started_msg), Toast.LENGTH_SHORT).show();
+            ComponentName service = v.getContext().startService(i);
+            if (null == service) {
+                // something really wrong here
+                mStartUpdatesButton.setEnabled(true);
+                mStopUpdatesButton.setEnabled(false);
+                Log.e("StartSvc", "Could not start service ");
+            }
+        }else{
+            showSettingsAlert();
         }
-
     }
 
     public void stopUpdates(View v){
@@ -169,7 +190,44 @@ public class MainActivity extends AppCompatActivity {
         i.putExtra("foo", "bar");
         mStartUpdatesButton.setEnabled(true);
         mStopUpdatesButton.setEnabled(false);
-        Toast.makeText(getBaseContext(),"Service Stoped!",Toast.LENGTH_SHORT).show();
+        Toast.makeText(getBaseContext(),getResources().getString(R.string.service_stopped_msg),Toast.LENGTH_SHORT).show();
         v.getContext().stopService(i);
+    }
+
+    public boolean canGetLocation(){
+        LocationManager locationManager = (LocationManager) this.getSystemService(LOCATION_SERVICE);
+        return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
+    }
+
+    /**
+     * Function to show settings alert dialog
+     * On pressing Settings button will lauch Settings Options
+     * */
+    public void showSettingsAlert(){
+        AlertDialog.Builder alertDialog = new AlertDialog.Builder(this);
+
+        // Setting Dialog Title
+        alertDialog.setTitle(getResources().getString(R.string.gps_settings_msg_tittle));
+
+        // Setting Dialog Message
+        alertDialog.setMessage(getResources().getString(R.string.gps_settings_msg));
+
+        // On pressing Settings button
+        alertDialog.setPositiveButton(getResources().getString(R.string.gps_settings_btn_settings), new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog,int which) {
+                Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                startActivity(intent);
+            }
+        });
+
+        // on pressing cancel button
+        alertDialog.setNegativeButton(getResources().getString(R.string.gps_settings_btn_cancel), new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+            }
+        });
+
+        // Showing Alert Message
+        alertDialog.show();
     }
 }

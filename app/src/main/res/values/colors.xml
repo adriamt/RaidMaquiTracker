@@ -3,4 +3,14 @@
     <color name="colorPrimary">#3F51B5</color>
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
+    <color name="accent_material_dark_1">#ba1718</color>
+    <color name="primary_material_dark_1">#212121</color>
+    <color name="primary_dark_material_dark_1">#000000</color>
+    <color name="background_material_dark_1">#303030</color>
+    <color name="foreground_material_dark_1">#FFFFFF</color>
+    <color name="primary_text_material_dark_1">#FFFFFF</color>
+    <color name="primary_text_material_light_1">#000000</color>
+    <color name="secondary_text_material_dark_1">#FFFFFF</color>
+    <color name="secondary_text_material_light_1">#000000</color>
+    <color name="window_background_1">#303030</color>
 </resources>
