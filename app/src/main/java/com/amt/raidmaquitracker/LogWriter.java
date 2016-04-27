@@ -11,15 +11,15 @@ import java.io.IOException;
 public class LogWriter {
 
     public void writeToFile(String data) {
-        File storage = new File(Environment.getExternalStorageDirectory(), "TrackerTest");
+        File storage = new File(Environment.getExternalStorageDirectory(), "RaidMaquiTracker");
         if (! storage.exists()){
             if (! storage.mkdirs()){
-                Log.d("TrackerTest", "Failed to create directory");
+                Log.d("RaidMaquiTracker", "Failed to create directory");
             }
         }
 
         try {
-            FileWriter fileW = new FileWriter(Environment.getExternalStorageDirectory().getPath() + "/TrackerTest/Log.txt",true);
+            FileWriter fileW = new FileWriter(Environment.getExternalStorageDirectory().getPath() + "/RaidMaquiTracker/Log.txt",true);
             fileW.append(data);
             fileW.append("\r\n");
             fileW.close();

@@ -15,6 +15,8 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.util.Log;
 
+import com.google.android.gms.analytics.ExceptionReporter;
+import com.google.android.gms.analytics.Tracker;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationRequest;
@@ -24,6 +26,8 @@ import com.google.android.gms.location.LocationServices;
 public class BackgroundLocationService extends Service implements
         GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener {
+
+    private Tracker mTracker;
 
     IBinder mBinder = new LocalBinder();
 
@@ -45,7 +49,22 @@ public class BackgroundLocationService extends Service implements
 
     @Override
     public void onCreate() {
+        
         super.onCreate();
+        // [START shared_tracker]
+        // Obtain the shared Tracker instance.
+        AnalyticsApplication application = (AnalyticsApplication) getApplication();
+        mTracker = application.getDefaultTracker();
+        // [END shared_tracker]
+
+        Thread.UncaughtExceptionHandler myHandler = new ExceptionReporter(
+                mTracker,
+                Thread.getDefaultUncaughtExceptionHandler(),
+                this);
+
+        // Make myHandler the new default uncaught exception handler.
+        Thread.setDefaultUncaughtExceptionHandler(myHandler);
+
         Log.i(TAG, "On Create");
         buildGoogleApiClient();
         Log.i(TAG, "OnstartCommand GoogleApiConect");
@@ -53,6 +72,8 @@ public class BackgroundLocationService extends Service implements
         INTERVAL_MILLIS = sharedPref.getString("interval_millis", "NULL");
         Log.i(TAG, "Interval : " + INTERVAL_MILLIS);
         mGoogleApiClient.connect();
+
+
     }
 
     @Override
@@ -106,6 +127,9 @@ public class BackgroundLocationService extends Service implements
     public void onConnected(Bundle bundle) {
         LocationRequest mLocationRequest = LocationRequest.create();
         mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+        /*if(INTERVAL_MILLIS.equals("")){
+            INTERVAL_MILLIS = "60000";
+        }*/
         Integer int_millis = Integer.parseInt(INTERVAL_MILLIS);
         mLocationRequest.setInterval(int_millis);  // milis
         mLocationRequest.setFastestInterval(int_millis/2);

@@ -10,9 +10,13 @@ import android.os.BatteryManager;
 import android.util.Log;
 
 import com.amt.raidmaquitracker.httpTask.HttpHandler;
+import com.google.android.gms.analytics.ExceptionReporter;
+import com.google.android.gms.analytics.Tracker;
 import com.google.android.gms.location.LocationResult;
 
 public class LocationReceiver extends BroadcastReceiver {
+
+    private Tracker mTracker;
 
     float battery = 0;
 
@@ -31,6 +35,18 @@ public class LocationReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         mContext = context;
+
+        AnalyticsApplication application = (AnalyticsApplication) mContext.getApplicationContext();
+        mTracker = application.getDefaultTracker();
+        // [END shared_tracker]
+
+        Thread.UncaughtExceptionHandler myHandler = new ExceptionReporter(
+                mTracker,
+                Thread.getDefaultUncaughtExceptionHandler(),
+                mContext);
+        // Make myHandler the new default uncaught exception handler.
+        Thread.setDefaultUncaughtExceptionHandler(myHandler);
+
         // Need to check and grab the Intent's extras like so
         sharedPref = context.getSharedPreferences(PREFS_NAME,Context.MODE_PRIVATE);
         String session_id = sharedPref.getString("session_id", "NULL");
@@ -43,10 +59,10 @@ public class LocationReceiver extends BroadcastReceiver {
             new HttpHandler() {
                 @Override
                 public void onResponse(String result) {
-                    if(!INTERVAL_MILLIS.equals(result)) {
+                    if(!INTERVAL_MILLIS.equals(result) && !result.equals("ERROR")) {
                         SharedPreferences.Editor editor = sharedPref.edit();
                         editor.putString("interval_millis", result);
-                        editor.apply();
+                        editor.commit();
                         Intent i2 = new Intent(mContext, BackgroundLocationService.class);
                         i2.putExtra("foo", "bar");
                         Log.e("StopSvc", "Service");

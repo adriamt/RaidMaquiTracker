@@ -10,7 +10,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.location.LocationManager;
 import android.provider.Settings;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -20,11 +19,16 @@ import android.widget.Toast;
 
 import com.amt.raidmaquitracker.httpTask.HttpHandler;
 
+import com.google.android.gms.analytics.ExceptionReporter;
+import com.google.android.gms.analytics.Tracker;
+
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
 
 public class MainActivity extends Activity {
+
+    private Tracker mTracker;
 
     Button btnLogin;
     Button btnCreateSession;
@@ -48,6 +52,20 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        // [START shared_tracker]
+        // Obtain the shared Tracker instance.
+        AnalyticsApplication application = (AnalyticsApplication) getApplication();
+        mTracker = application.getDefaultTracker();
+        // [END shared_tracker]
+
+        Thread.UncaughtExceptionHandler myHandler = new ExceptionReporter(
+                mTracker,
+                Thread.getDefaultUncaughtExceptionHandler(),
+                this);
+
+        // Make myHandler the new default uncaught exception handler.
+        Thread.setDefaultUncaughtExceptionHandler(myHandler);
+
         btnLogin = (Button) findViewById(R.id.btnLogin);
         btnCreateSession = (Button) findViewById(R.id.btnCreateSession);
         etUserMail = (EditText)findViewById(R.id.etUserMail);
@@ -63,7 +81,7 @@ public class MainActivity extends Activity {
 
         SharedPreferences.Editor editor = sharedPref.edit();
         editor.putString("interval_millis", INTERVAL_MILLIS);
-        editor.apply();
+        editor.commit();
 
         final LogWriter lw = new LogWriter();
 
@@ -71,7 +89,6 @@ public class MainActivity extends Activity {
             @Override
             public void onClick(View v) {
                 userMail = etUserMail.getText().toString();
-                btnCreateSession.setEnabled(true);
 
                 if (!userMail.equals("")) {
                     new HttpHandler() {
@@ -85,6 +102,7 @@ public class MainActivity extends Activity {
                             if (!result.equals("")) {
                                 temp = "Login OK!";
                                 lw.writeToFile("[" + formattedDate + "] " + "Login OK. Session ID: " + session_id + "\\r\\n");
+                                btnCreateSession.setEnabled(true);
                             } else {
                                 temp = "Login Error!";
                                 lw.writeToFile("[" + formattedDate + "] " + "Login Error.");

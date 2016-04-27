@@ -88,14 +88,15 @@ public class AsyncSendLocation {
                 while((response = reader.readLine()) != null) {
                     sb.append(response);
                 }
-                lw.writeToFile("AsyncSenLocation:["+formattedDate+"] "+"Received: " + (String.valueOf(sb)));
+                lw.writeToFile("["+formattedDate+"] AsyncSednLocation: "+"Received: " + (String.valueOf(sb)));
                 lw.writeToFile("    Data Sent: " + postData);
-                resposta = (String.valueOf(sb));
+                //resposta = (String.valueOf(sb));
+                resposta = "ERROR";
             }
             return resposta;
         } catch (Exception e) {
-            lw.writeToFile("AsyncSenLocation:[" + formattedDate + "] " + e.getMessage());
-            return resposta ;
+            lw.writeToFile("[" + formattedDate + "] AsyncSendLocation: " + e.getMessage());
+            return "ERROR" ;
         }
     }
 
